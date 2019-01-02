@@ -11,6 +11,7 @@ import java.io.File
 import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
 import java.util.*
+import javax.lang.model.element.Modifier
 import javax.tools.JavaFileObject
 
 @RunWith(Parameterized::class)
@@ -102,7 +103,8 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
                 generateModelBuilder = generateModelBuilder,
                 useJavaBeansSemanticNaming = useJavaBeansSemanticNaming,
                 suppressRawTypesWarning = suppressRawTypesWarning,
-                outputPackageName = null
+                outputPackageName = null,
+                defaultAccessModifier = Modifier.PUBLIC
             )
             arrayOf(it.name, args)
           }

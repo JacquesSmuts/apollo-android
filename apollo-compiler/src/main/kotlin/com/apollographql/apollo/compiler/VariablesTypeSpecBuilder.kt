@@ -15,7 +15,7 @@ class VariablesTypeSpecBuilder(
 ) {
   fun build(): TypeSpec {
     return TypeSpec.classBuilder(VARIABLES_CLASS_NAME)
-        .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+        .addModifiers(context.defaultAccessModifier, Modifier.STATIC, Modifier.FINAL)
         .superclass(ClassNames.GRAPHQL_OPERATION_VARIABLES)
         .addFields(variableFieldSpecs())
         .addField(valueMapFieldSpec())
@@ -75,7 +75,7 @@ class VariablesTypeSpecBuilder(
     return variables.map { variable ->
       MethodSpec
           .methodBuilder(variable.name.decapitalize())
-          .addModifiers(Modifier.PUBLIC)
+          .addModifiers(context.defaultAccessModifier)
           .returns(variable.javaTypeName(context))
           .addStatement("return \$L", variable.name.decapitalize())
           .build()
@@ -84,7 +84,7 @@ class VariablesTypeSpecBuilder(
 
   private fun valueMapAccessorMethodSpec(): MethodSpec {
     return MethodSpec.methodBuilder(VALUE_MAP_FIELD_NAME)
-        .addModifiers(Modifier.PUBLIC)
+        .addModifiers(context.defaultAccessModifier)
         .addAnnotation(Override::class.java)
         .returns(ClassNames.parameterizedMapOf(java.lang.String::class.java, Object::class.java))
         .addStatement("return \$T.unmodifiableMap(\$L)", Collections::class.java, VALUE_MAP_FIELD_NAME)
@@ -103,7 +103,8 @@ class VariablesTypeSpecBuilder(
                   fields = builderFields,
                   fieldDefaultValues = emptyMap(),
                   fieldJavaDocs = emptyMap(),
-                  typeDeclarations = context.typeDeclarations
+                  typeDeclarations = context.typeDeclarations,
+                  accessModifier = context.defaultAccessModifier
               ).build()
           )
     }
@@ -128,7 +129,7 @@ class VariablesTypeSpecBuilder(
         .fold(CodeBlock.builder(), CodeBlock.Builder::add)
         .build()
     val methodSpec = MethodSpec.methodBuilder("marshal")
-        .addModifiers(Modifier.PUBLIC)
+        .addModifiers(context.defaultAccessModifier)
         .addAnnotation(Override::class.java)
         .addParameter(WRITER_PARAM)
         .addException(IOException::class.java)
@@ -140,7 +141,7 @@ class VariablesTypeSpecBuilder(
         .build()
     return MethodSpec.methodBuilder(MARSHALLER_PARAM_NAME)
         .addAnnotation(Override::class.java)
-        .addModifiers(Modifier.PUBLIC)
+        .addModifiers(context.defaultAccessModifier)
         .returns(InputFieldMarshaller::class.java)
         .addStatement("return \$L", marshallerType)
         .build()

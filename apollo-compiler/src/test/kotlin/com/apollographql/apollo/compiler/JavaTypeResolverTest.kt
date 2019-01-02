@@ -7,6 +7,7 @@ import com.squareup.javapoet.TypeName
 import org.junit.Assert
 import org.junit.Test
 import java.util.*
+import javax.lang.model.element.Modifier
 
 class JavaTypeResolverTest {
   private val defaultContext = CodeGenerationContext(
@@ -20,7 +21,8 @@ class JavaTypeResolverTest {
       useSemanticNaming = false,
       generateModelBuilder = false,
       useJavaBeansSemanticNaming = false,
-      suppressRawTypesWarning = false
+      suppressRawTypesWarning = false,
+      defaultAccessModifier = Modifier.PUBLIC
   )
   private val defaultResolver = JavaTypeResolver(defaultContext, packageName)
 

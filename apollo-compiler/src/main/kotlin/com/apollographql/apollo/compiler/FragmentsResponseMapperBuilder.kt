@@ -34,7 +34,7 @@ class FragmentsResponseMapperBuilder(
 ) {
   fun build(): TypeSpec {
     return TypeSpec.classBuilder(Util.RESPONSE_FIELD_MAPPER_TYPE_NAME)
-        .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+        .addModifiers(context.defaultAccessModifier, Modifier.STATIC, Modifier.FINAL)
         .addSuperinterface(RESPONSE_FIELD_MAPPER_TYPE)
         .addFields(mapperFields(fragmentFields))
         .addMethod(mapMethod(fragmentFields))
@@ -43,7 +43,7 @@ class FragmentsResponseMapperBuilder(
 
   private fun mapMethod(fragmentFields: List<FieldSpec>) =
       MethodSpec.methodBuilder("map")
-          .addModifiers(Modifier.PUBLIC)
+          .addModifiers(context.defaultAccessModifier)
           .addAnnotation(Override::class.java)
           .addParameter(READER_PARAM)
           .addParameter(CONDITIONAL_TYPE_PARAM)

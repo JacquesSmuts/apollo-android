@@ -53,7 +53,7 @@ class ApolloClassGenerationTask extends SourceTask {
             inputFile, outputDir.get().asFile, customTypeMapping.get(),
             nullableValueType != null ? nullableValueType : NullableValueType.ANNOTATED, useSemanticNaming.get(),
             generateModelBuilder.get(), useJavaBeansSemanticNaming.get(), outputPackageName,
-            suppressRawTypesWarning.get()
+            suppressRawTypesWarning.get(), defaultAccessModifier.get()
         )
         new GraphQLCompiler().write(args)
       }

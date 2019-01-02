@@ -15,7 +15,7 @@ class CustomEnumTypeSpecBuilder(
       TypeSpec.enumBuilder(className(context))
           .addAnnotation(Annotations.GENERATED_BY_APOLLO)
           .addSuperinterface(ScalarType::class.java)
-          .addModifiers(Modifier.PUBLIC)
+          .addModifiers(context.defaultAccessModifier)
           .addEnumConstants()
           .build()
 
@@ -31,13 +31,13 @@ class CustomEnumTypeSpecBuilder(
   private fun scalarMappingTypeSpec(scalarType: String, javaTypeName: String) =
       TypeSpec.anonymousClassBuilder("")
           .addMethod(MethodSpec.methodBuilder("typeName")
-              .addModifiers(Modifier.PUBLIC)
+              .addModifiers(context.defaultAccessModifier)
               .addAnnotation(Override::class.java)
               .returns(java.lang.String::class.java)
               .addStatement("return \$S", scalarType)
               .build())
           .addMethod(MethodSpec.methodBuilder("javaType")
-              .addModifiers(Modifier.PUBLIC)
+              .addModifiers(context.defaultAccessModifier)
               .apply {
                 if (context.suppressRawTypesWarning) {
                   this.addAnnotation(com.apollographql.apollo.compiler.Annotations.SUPPRESS_WARNINGS)

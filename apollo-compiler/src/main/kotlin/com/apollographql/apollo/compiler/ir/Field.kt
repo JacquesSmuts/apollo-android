@@ -30,7 +30,7 @@ data class Field(
         context = context,
         abstract = abstract
     )
-        .build(Modifier.PUBLIC, Modifier.STATIC)
+        .build(context.defaultAccessModifier, Modifier.STATIC)
         .let {
           if (context.generateModelBuilder) {
             it.withBuilder()
@@ -50,7 +50,7 @@ data class Field(
       respName
     }
     return MethodSpec.methodBuilder(name)
-        .addModifiers(Modifier.PUBLIC)
+        .addModifiers(context.defaultAccessModifier)
         .returns(returnTypeName)
         .addStatement("return this.\$L", responseName.escapeJavaReservedWord())
         .let { if (description != null) it.addJavadoc("\$L\n", description) else it }

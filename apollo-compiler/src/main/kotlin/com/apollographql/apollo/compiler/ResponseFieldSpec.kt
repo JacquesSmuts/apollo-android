@@ -124,7 +124,7 @@ class ResponseFieldSpec(
         .superclass(responseFieldObjectReaderType(normalizedFieldSpec.type))
         .addMethod(MethodSpec
             .methodBuilder("read")
-            .addModifiers(Modifier.PUBLIC)
+            .addModifiers(context.defaultAccessModifier)
             .addAnnotation(Override::class.java)
             .returns(normalizedFieldSpec.type)
             .addParameter(RESPONSE_READER_PARAM)
@@ -159,7 +159,7 @@ class ResponseFieldSpec(
           .superclass(responseFieldObjectReaderType(rawFieldType))
           .addMethod(MethodSpec
               .methodBuilder("read")
-              .addModifiers(Modifier.PUBLIC)
+              .addModifiers(context.defaultAccessModifier)
               .addAnnotation(Override::class.java)
               .returns(rawFieldType)
               .addParameter(RESPONSE_READER_PARAM)
@@ -177,7 +177,7 @@ class ResponseFieldSpec(
           .superclass(responseFieldListItemReaderType(rawFieldType))
           .addMethod(MethodSpec
               .methodBuilder("read")
-              .addModifiers(Modifier.PUBLIC)
+              .addModifiers(context.defaultAccessModifier)
               .addAnnotation(Override::class.java)
               .returns(rawFieldType)
               .addParameter(RESPONSE_LIST_ITEM_READER_PARAM)
@@ -201,7 +201,7 @@ class ResponseFieldSpec(
         .superclass(responseFieldListItemReaderType(rawFieldType))
         .addMethod(MethodSpec
             .methodBuilder("read")
-            .addModifiers(Modifier.PUBLIC)
+            .addModifiers(context.defaultAccessModifier)
             .addAnnotation(Override::class.java)
             .returns(rawFieldType)
             .addParameter(RESPONSE_LIST_ITEM_READER_PARAM)
@@ -217,7 +217,7 @@ class ResponseFieldSpec(
         .superclass(conditionalResponseFieldReaderType(normalizedFieldSpec.type))
         .addMethod(MethodSpec
             .methodBuilder("read")
-            .addModifiers(Modifier.PUBLIC)
+            .addModifiers(context.defaultAccessModifier)
             .addAnnotation(Override::class.java)
             .returns(normalizedFieldSpec.type)
             .addParameter(ParameterSpec.builder(String::class.java, CONDITIONAL_TYPE_VAR).build())
@@ -235,7 +235,7 @@ class ResponseFieldSpec(
         .superclass(conditionalResponseFieldReaderType(FRAGMENTS_CLASS))
         .addMethod(MethodSpec
             .methodBuilder("read")
-            .addModifiers(Modifier.PUBLIC)
+            .addModifiers(context.defaultAccessModifier)
             .addAnnotation(Override::class.java)
             .returns(FRAGMENTS_CLASS)
             .addParameter(ParameterSpec.builder(String::class.java, CONDITIONAL_TYPE_VAR).build())
@@ -314,7 +314,7 @@ class ResponseFieldSpec(
           .addSuperinterface(ResponseWriter.ListWriter::class.java)
           .addMethod(MethodSpec
               .methodBuilder("write")
-              .addModifiers(Modifier.PUBLIC)
+              .addModifiers(context.defaultAccessModifier)
               .addAnnotation(Override::class.java)
               .addParameter(ITEMS_VALUE_PARAM)
               .addParameter(RESPONSE_LIST_ITEM_WRITER_PARAM)
@@ -346,7 +346,7 @@ class ResponseFieldSpec(
     val listWriterType = TypeSpec.anonymousClassBuilder("")
         .addSuperinterface(ResponseWriter.ListWriter::class.java)
         .addMethod(MethodSpec.methodBuilder("write")
-            .addModifiers(Modifier.PUBLIC)
+            .addModifiers(context.defaultAccessModifier)
             .addAnnotation(Override::class.java)
             .addParameter(ITEMS_VALUE_PARAM)
             .addParameter(RESPONSE_LIST_ITEM_WRITER_PARAM)

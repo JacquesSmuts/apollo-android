@@ -4,6 +4,8 @@ import com.apollographql.apollo.compiler.NullableValueType
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
 
+import javax.lang.model.element.Modifier
+
 class ApolloExtension {
   static final String NAME = "apollo"
 
@@ -15,6 +17,7 @@ class ApolloExtension {
   final Property<String> schemaFilePath
   final Property<String> outputPackageName
   final Property<Map> customTypeMapping
+  final Property<Modifier> defaultAccessModifier
 
   ApolloExtension(Project project) {
     nullableValueType = project.getObjects().property(String.class)
@@ -40,6 +43,9 @@ class ApolloExtension {
 
     customTypeMapping = project.getObjects().property(Map.class)
     customTypeMapping.set(new LinkedHashMap())
+
+    defaultAccessModifier = project.getObjects().property(Short.class)
+    defaultAccessModifier.set(Modifier.PUBLIC)
   }
 
   void setNullableValueType(String nullableValueType) {
@@ -74,5 +80,9 @@ class ApolloExtension {
     LinkedHashMap tmp = new LinkedHashMap()
     tmp.putAll(customTypeMapping)
     this.customTypeMapping.set(tmp)
+  }
+
+  void setDefaultAccessModifier(Modifier modifier) {
+    this.defaultAccessModifier.set(modifier)
   }
 }

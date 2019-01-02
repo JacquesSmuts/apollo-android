@@ -18,7 +18,7 @@ class OperationTypeSpecBuilder(
     val newContext = context.copy(reservedTypeNames = context.reservedTypeNames.plus(operationTypeName))
     return TypeSpec.classBuilder(operationTypeName)
         .addAnnotation(Annotations.GENERATED_BY_APOLLO)
-        .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+        .addModifiers(context.defaultAccessModifier, Modifier.FINAL)
         .addSuperinterface(operationSuperInterface(context))
         .addOperationDefinition(operation)
         .addOperationId(operation)
@@ -90,14 +90,14 @@ class OperationTypeSpecBuilder(
     }
 
     addField(FieldSpec.builder(ClassNames.STRING, QUERY_DOCUMENT_FIELD_NAME)
-        .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+        .addModifiers(context.defaultAccessModifier, Modifier.STATIC, Modifier.FINAL)
         .initializer(initializeCodeBuilder.build())
         .build()
     )
 
     addMethod(MethodSpec.methodBuilder(QUERY_DOCUMENT_ACCESSOR_NAME)
         .addAnnotation(Annotations.OVERRIDE)
-        .addModifiers(Modifier.PUBLIC)
+        .addModifiers(context.defaultAccessModifier)
         .returns(ClassNames.STRING)
         .addStatement("return \$L", QUERY_DOCUMENT_FIELD_NAME)
         .build()
@@ -108,7 +108,7 @@ class OperationTypeSpecBuilder(
 
   private fun wrapDataMethod(context: CodeGenerationContext): MethodSpec {
     return MethodSpec.methodBuilder("wrapData")
-        .addModifiers(Modifier.PUBLIC)
+        .addModifiers(context.defaultAccessModifier)
         .addAnnotation(Override::class.java)
         .addParameter(ParameterSpec.builder(dataVarType, "data").build())
         .returns(wrapperType(context))
@@ -132,7 +132,7 @@ class OperationTypeSpecBuilder(
 
     addMethod(MethodSpec.methodBuilder(VARIABLES_VAR)
         .addAnnotation(Annotations.OVERRIDE)
-        .addModifiers(Modifier.PUBLIC)
+        .addModifiers(context.defaultAccessModifier)
         .returns(variablesType())
         .addStatement("return \$L", VARIABLES_VAR)
         .build()
@@ -199,7 +199,7 @@ class OperationTypeSpecBuilder(
 
     val arguments = arguments()
     return MethodSpec.constructorBuilder()
-        .addModifiers(Modifier.PUBLIC)
+        .addModifiers(context.defaultAccessModifier)
         .addParameters(arguments)
         .addCode(code(arguments))
         .build()
@@ -215,7 +215,8 @@ class OperationTypeSpecBuilder(
           fields = emptyList(),
           fieldDefaultValues = emptyMap(),
           fieldJavaDocs = emptyMap(),
-          typeDeclarations = context.typeDeclarations
+          typeDeclarations = context.typeDeclarations,
+          accessModifier = context.defaultAccessModifier
       ).let { addType(it.build()) }
     }
 
@@ -233,7 +234,8 @@ class OperationTypeSpecBuilder(
               fields = it,
               fieldDefaultValues = emptyMap(),
               fieldJavaDocs = emptyMap(),
-              typeDeclarations = context.typeDeclarations
+              typeDeclarations = context.typeDeclarations,
+              accessModifier = context.defaultAccessModifier
           )
         }
         .let { addType(it.build()) }

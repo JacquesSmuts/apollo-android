@@ -22,7 +22,7 @@ data class InlineFragment(
           context = context,
           abstract = abstract
       )
-          .build(Modifier.PUBLIC, Modifier.STATIC)
+          .build(context.defaultAccessModifier, Modifier.STATIC)
           .let {
             if (context.generateModelBuilder) {
               it.withBuilder()
@@ -33,7 +33,7 @@ data class InlineFragment(
 
   fun fieldSpec(context: CodeGenerationContext, publicModifier: Boolean = false): FieldSpec =
       FieldSpec.builder(typeName(context), formatClassName().decapitalize())
-          .let { if (publicModifier) it.addModifiers(Modifier.PUBLIC) else it }
+          .let { if (publicModifier) it.addModifiers(context.defaultAccessModifier) else it }
           .addModifiers(Modifier.FINAL)
           .build()
 

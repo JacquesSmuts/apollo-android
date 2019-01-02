@@ -56,7 +56,7 @@ fun MethodSpec.overrideReturnType(typeNameOverrideMap: Map<String, String>): Met
 fun TypeSpec.withValueInitConstructor(nullableValueGenerationType: NullableValueType): TypeSpec {
   return toBuilder()
       .addMethod(MethodSpec.constructorBuilder()
-          .addModifiers(Modifier.PUBLIC)
+          .addModifiers(modifiers)
           .addParameters(fieldSpecs
               .filter { !it.modifiers.contains(Modifier.STATIC) }
               .map {
@@ -184,7 +184,7 @@ fun TypeSpec.withEqualsImplementation(): TypeSpec {
   return toBuilder()
       .addMethod(MethodSpec.methodBuilder("equals")
           .addAnnotation(Override::class.java)
-          .addModifiers(Modifier.PUBLIC)
+          .addModifiers(modifiers)
           .returns(TypeName.BOOLEAN)
           .addParameter(ParameterSpec.builder(TypeName.OBJECT, "o").build())
           .addCode(methodCode(ClassName.get("", name)))
@@ -238,7 +238,7 @@ fun TypeSpec.withHashCodeImplementation(): TypeSpec {
           Modifier.VOLATILE, Modifier.TRANSIENT).build())
       .addMethod(MethodSpec.methodBuilder("hashCode")
           .addAnnotation(Override::class.java)
-          .addModifiers(Modifier.PUBLIC)
+          .addModifiers(modifiers)
           .returns(TypeName.INT)
           .addCode(methodCode())
           .build())
@@ -362,7 +362,7 @@ fun TypeSpec.withBuilder(): TypeSpec {
     val builderVariable = ClassNames.BUILDER.simpleName().decapitalize()
     val builderClass = ClassName.get("", ClassNames.BUILDER.simpleName())
     val toBuilderMethod = MethodSpec.methodBuilder(BuilderTypeSpecBuilder.TO_BUILDER_METHOD_NAME)
-        .addModifiers(Modifier.PUBLIC)
+        .addModifiers(modifiers)
         .returns(builderClass)
         .addStatement("\$T \$L = new \$T()", builderClass, builderVariable, builderClass)
         .addCode(fields
@@ -386,7 +386,8 @@ fun TypeSpec.withBuilder(): TypeSpec {
                 fieldDefaultValues = emptyMap(),
                 fieldJavaDocs = emptyMap(),
                 typeDeclarations = emptyList(),
-                buildableTypes = buildableTypes
+                buildableTypes = buildableTypes,
+                accessModifier = Modifier.PUBLIC
             ).build()
         )
         .build()

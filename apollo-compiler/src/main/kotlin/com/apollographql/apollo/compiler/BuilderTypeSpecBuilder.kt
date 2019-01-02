@@ -11,11 +11,12 @@ class BuilderTypeSpecBuilder(
     val fieldDefaultValues: Map<String, Any?>,
     val fieldJavaDocs: Map<String, String>,
     val typeDeclarations: List<TypeDeclaration>,
-    val buildableTypes: List<TypeName> = emptyList()
+    val buildableTypes: List<TypeName> = emptyList(),
+    val accessModifier: Modifier
 ) {
   fun build(): TypeSpec {
     return TypeSpec.classBuilder(ClassNames.BUILDER.simpleName())
-        .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+        .addModifiers(accessModifier, Modifier.STATIC, Modifier.FINAL)
         .addFields(builderFields())
         .addMethod(MethodSpec.constructorBuilder().build())
         .addMethods(fieldSetterMethodSpecs())
@@ -78,7 +79,7 @@ class BuilderTypeSpecBuilder(
 
   private fun fieldSetterMethodSpec(fieldName: String, fieldType: TypeName, javaDoc: String?): MethodSpec {
     return MethodSpec.methodBuilder(fieldName)
-        .addModifiers(Modifier.PUBLIC)
+        .addModifiers(accessModifier)
         .addParameter(ParameterSpec.builder(fieldType.unwrapOptionalType(), fieldName).build())
         .apply {
           if (!javaDoc.isNullOrBlank()) {
@@ -101,7 +102,7 @@ class BuilderTypeSpecBuilder(
 
   private fun inputFieldSetterMethodSpec(fieldName: String, fieldType: TypeName, javaDoc: String?): MethodSpec {
     return MethodSpec.methodBuilder("${fieldName}Input")
-        .addModifiers(Modifier.PUBLIC)
+        .addModifiers(accessModifier)
         .addParameter(ParameterSpec.builder(fieldType, fieldName).addAnnotation(Annotations.NONNULL).build())
         .apply {
           if (!javaDoc.isNullOrBlank()) {
@@ -167,7 +168,7 @@ class BuilderTypeSpecBuilder(
     val javaDoc = fieldJavaDocs[fieldName]
     val mutatorParam = mutatorParam(fieldType)
     return MethodSpec.methodBuilder(fieldName)
-        .addModifiers(Modifier.PUBLIC)
+        .addModifiers(accessModifier)
         .addParameter(mutatorParam)
         .apply { if (!javaDoc.isNullOrBlank()) addJavadoc(CodeBlock.of("\$L\n", javaDoc)) }
         .returns(ClassNames.BUILDER)
@@ -186,7 +187,7 @@ class BuilderTypeSpecBuilder(
 
     return MethodSpec
         .methodBuilder("build")
-        .addModifiers(Modifier.PUBLIC)
+        .addModifiers(accessModifier)
         .returns(targetObjectClassName)
         .addCode(validationCodeBuilder.build())
         .addStatement("return new \$T\$L", targetObjectClassName,

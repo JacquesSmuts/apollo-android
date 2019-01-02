@@ -28,7 +28,7 @@ data class Operation(
           context = context,
           abstract = abstract
       )
-          .build(Modifier.PUBLIC, Modifier.STATIC)
+          .build(context.defaultAccessModifier, Modifier.STATIC)
           .toBuilder()
           .addSuperinterface(Operation.Data::class.java)
           .build()

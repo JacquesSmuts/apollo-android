@@ -85,7 +85,7 @@ class InputFieldSpec(
     return TypeSpec.anonymousClassBuilder("")
         .addSuperinterface(InputFieldWriter.ListWriter::class.java)
         .addMethod(MethodSpec.methodBuilder("write")
-            .addModifiers(Modifier.PUBLIC)
+            .addModifiers(context.defaultAccessModifier)
             .addAnnotation(Override::class.java)
             .addException(IOException::class.java)
             .addParameter(LIST_ITEM_WRITER_PARAM)

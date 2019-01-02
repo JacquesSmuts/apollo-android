@@ -12,7 +12,8 @@ data class TypeDeclaration(
     val name: String,
     val description: String?,
     val values: List<TypeDeclarationValue>?,
-    val fields: List<TypeDeclarationField>?
+    val fields: List<TypeDeclarationField>?,
+    val accessModifier: Modifier
 ) : CodeGenerator {
   override fun toTypeSpec(context: CodeGenerationContext, abstract: Boolean): TypeSpec {
     if (kind == KIND_ENUM) {
@@ -46,7 +47,7 @@ data class TypeDeclaration(
         .addJavadoc("\$L\n", "Auto generated constant for unknown enum values")
         .build()
     val safeValueOfMethodSpec = MethodSpec.methodBuilder(ENUM_SAFE_VALUE_OF)
-        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+        .addModifiers(accessModifier, Modifier.STATIC)
         .addParameter(ParameterSpec.builder(ClassNames.STRING, "rawValue").build())
         .returns(ClassName.get("", name.capitalize()))
         .addCode(CodeBlock.builder()
@@ -62,7 +63,7 @@ data class TypeDeclaration(
 
     return TypeSpec.enumBuilder(name.capitalize())
         .addAnnotation(Annotations.GENERATED_BY_APOLLO)
-        .addModifiers(Modifier.PUBLIC)
+        .addModifiers(accessModifier)
         .addField(FieldSpec.builder(ClassNames.STRING, "rawValue", Modifier.PRIVATE, Modifier.FINAL).build())
         .addMethod(MethodSpec.constructorBuilder()
             .addParameter(ParameterSpec.builder(ClassNames.STRING, "rawValue").build())
@@ -70,7 +71,7 @@ data class TypeDeclaration(
             .build()
         )
         .addMethod(MethodSpec.methodBuilder("rawValue")
-            .addModifiers(Modifier.PUBLIC)
+            .addModifiers(accessModifier)
             .returns(ClassNames.STRING)
             .addStatement("return rawValue")
             .build())

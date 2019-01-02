@@ -7,6 +7,8 @@ import com.apollographql.apollo.compiler.ir.TypeDeclaration
 import com.squareup.javapoet.JavaFile
 import com.squareup.moshi.Moshi
 import java.io.File
+import javax.lang.model.element.Modifier
+
 
 class GraphQLCompiler {
   private val moshi = Moshi.Builder().build()
@@ -29,7 +31,8 @@ class GraphQLCompiler {
         useSemanticNaming = args.useSemanticNaming,
         generateModelBuilder = args.generateModelBuilder,
         useJavaBeansSemanticNaming = args.useJavaBeansSemanticNaming,
-        suppressRawTypesWarning = args.suppressRawTypesWarning
+        suppressRawTypesWarning = args.suppressRawTypesWarning,
+        defaultAccessModifier = args.defaultAccessModifier
     )
 
     if (irPackageName.isNotEmpty()) {
@@ -96,6 +99,8 @@ class GraphQLCompiler {
       val generateModelBuilder: Boolean,
       val useJavaBeansSemanticNaming: Boolean,
       val outputPackageName: String?,
-      val suppressRawTypesWarning: Boolean
+      val suppressRawTypesWarning: Boolean,
+      val defaultAccessModifier: Modifier
   )
+
 }

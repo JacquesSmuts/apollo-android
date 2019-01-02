@@ -18,7 +18,7 @@ class InputTypeSpecBuilder(
   fun build(): TypeSpec =
       TypeSpec.classBuilder(objectClassName)
           .addAnnotation(Annotations.GENERATED_BY_APOLLO)
-          .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+          .addModifiers(context.defaultAccessModifier, Modifier.FINAL)
           .addSuperinterface(ClassNames.INPUT_TYPE)
           .addConstructor()
           .addFields()
@@ -65,7 +65,8 @@ class InputTypeSpecBuilder(
                   fields = builderFields,
                   fieldDefaultValues = builderFieldDefaultValues,
                   fieldJavaDocs = javaDocs,
-                  typeDeclarations = context.typeDeclarations
+                  typeDeclarations = context.typeDeclarations,
+                  accessModifier = context.defaultAccessModifier
               ).build()
           )
     }
@@ -89,7 +90,7 @@ class InputTypeSpecBuilder(
         .fold(CodeBlock.builder(), CodeBlock.Builder::add)
         .build()
     val methodSpec = MethodSpec.methodBuilder("marshal")
-        .addModifiers(Modifier.PUBLIC)
+        .addModifiers(context.defaultAccessModifier)
         .addAnnotation(Override::class.java)
         .addParameter(WRITER_PARAM)
         .addException(IOException::class.java)
@@ -101,7 +102,7 @@ class InputTypeSpecBuilder(
         .build()
     return MethodSpec.methodBuilder(MARSHALLER_PARAM_NAME)
         .addAnnotation(Annotations.OVERRIDE)
-        .addModifiers(Modifier.PUBLIC)
+        .addModifiers(context.defaultAccessModifier)
         .returns(InputFieldMarshaller::class.java)
         .addStatement("return \$L", marshallerType)
         .build()
@@ -111,14 +112,14 @@ class InputTypeSpecBuilder(
     fun addFieldDefinition(field: TypeDeclarationField) {
       addField(FieldSpec
           .builder(field.javaTypeName(context), field.name.decapitalize().escapeJavaReservedWord())
-          .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
+          .addModifiers(context.defaultAccessModifier, Modifier.FINAL)
           .build())
     }
 
     fun addFieldAccessor(field: TypeDeclarationField) {
       val optional = !field.type.endsWith("!")
       addMethod(MethodSpec.methodBuilder(field.name.decapitalize().escapeJavaReservedWord())
-          .addModifiers(Modifier.PUBLIC)
+          .addModifiers(context.defaultAccessModifier)
           .returns(field.javaTypeName(context).unwrapOptionalType())
           .let {
             if (!field.description.isNullOrBlank())

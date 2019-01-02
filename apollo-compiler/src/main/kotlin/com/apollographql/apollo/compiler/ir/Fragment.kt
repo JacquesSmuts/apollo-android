@@ -16,7 +16,8 @@ data class Fragment(
     val fields: List<Field>,
     val fragmentSpreads: List<String>,
     val inlineFragments: List<InlineFragment>,
-    val fragmentsReferenced: List<String>
+    val fragmentsReferenced: List<String>,
+    val accessModifier: Modifier
 ) : CodeGenerator {
 
   /** Returns the Java interface that represents this Fragment object. */
@@ -30,7 +31,7 @@ data class Fragment(
         context = context,
         abstract = abstract
     )
-        .build(Modifier.PUBLIC)
+        .build(context.defaultAccessModifier)
         .toBuilder()
         .addSuperinterface(ClassNames.FRAGMENT)
         .addAnnotation(Annotations.GENERATED_BY_APOLLO)
@@ -55,14 +56,14 @@ data class Fragment(
 
   private fun TypeSpec.Builder.addFragmentDefinitionField(): TypeSpec.Builder =
       addField(FieldSpec.builder(ClassNames.STRING, FRAGMENT_DEFINITION_FIELD_NAME)
-          .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+          .addModifiers(accessModifier, Modifier.STATIC, Modifier.FINAL)
           .initializer("\$S", source)
           .build())
 
   @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
   private fun TypeSpec.Builder.addTypeConditionField(): TypeSpec.Builder =
       addField(FieldSpec.builder(ClassNames.parameterizedListOf(java.lang.String::class.java), POSSIBLE_TYPES_VAR)
-          .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+          .addModifiers(accessModifier, Modifier.STATIC, Modifier.FINAL)
           .initializer(possibleTypesInitCode())
           .build())
 
